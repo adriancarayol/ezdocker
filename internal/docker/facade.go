@@ -14,6 +14,10 @@ type Docker struct {
 	client *dockerClient.Client
 }
 
+type CommandParameter struct {
+	Name string
+}
+
 // Create a new Docker to use
 func New() *Docker {
 	c, err := dockerClient.NewClientWithOpts(dockerClient.FromEnv, dockerClient.WithAPIVersionNegotiation())
@@ -37,31 +41,35 @@ func (d *Docker) ListContainers() []types.Container {
 	return containers
 }
 
+func printContainer(c types.Container) {
+	containerNames := strings.Join(c.Names, ", ")
+	fmt.Println(containerNames)
+
+	black := color.New(color.FgBlack)
+	blackBold := black.Add(color.Bold)
+	blackBold.Printf("  • ID: %s\n", c.ID)
+	blackBold.Printf("  • IMAGE: %s\n", c.Image)
+	blackBold.Printf("  • STATUS: %s - %s\n", c.State, c.Status)
+	blackBold.Printf("  • COMMAND: %s\n", c.Command)
+	blackBold.Println("  • PORTS:")
+
+	for _, port := range c.Ports {
+		blackBold.Printf("    • IP: %s\n", port.IP)
+		blackBold.Printf("    • Public port: %d\n", port.PublicPort)
+		blackBold.Printf("    • Private port: %d\n", port.PrivatePort)
+		blackBold.Printf("    • Protocol: %s\n", port.Type)
+	}
+}
+
 // Print running containers
-func (d *Docker) PrintContainers() {
+func (d *Docker) PrintContainers(opts ...string) {
 	containers := d.ListContainers()
 
 	if containers != nil {
 		fmt.Printf("=== Running %d containers ===\n", len(containers))
 
 		for _, c := range containers {
-			containerNames := strings.Join(c.Names, ", ")
-			fmt.Println(containerNames)
-
-			black := color.New(color.FgBlack)
-			blackBold := black.Add(color.Bold)
-			blackBold.Printf("  • ID: %s\n", c.ID)
-			blackBold.Printf("  • IMAGE: %s\n", c.Image)
-			blackBold.Printf("  • STATUS: %s - %s\n", c.State, c.Status)
-			blackBold.Printf("  • COMMAND: %s\n", c.Command)
-			blackBold.Println("  • PORTS:")
-
-			for _, port := range c.Ports {
-				blackBold.Printf("    • IP: %s\n", port.IP)
-				blackBold.Printf("    • Public port: %d\n", port.PublicPort)
-				blackBold.Printf("    • Private port: %d\n", port.PrivatePort)
-				blackBold.Printf("    • Protocol: %s\n", port.Type)
-			}
+			printContainer(c)
 		}
 	} else {
 		fmt.Println("There's no containers running.")

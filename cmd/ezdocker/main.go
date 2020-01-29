@@ -1,10 +1,11 @@
 package main
 
 import (
-	"github.com/adriancarayol/ezdocker/internal/docker"
+	"github.com/adriancarayol/ezdocker/internal/cli"
 )
 
 func main() {
-	client := docker.New()
-	client.PrintContainers()
+	cli.Init()
+	parser := cli.New()
+	parser.ParseOptions()
 }
