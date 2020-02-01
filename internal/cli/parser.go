@@ -34,10 +34,34 @@ func (p *Parser) ParseOptions() {
 	}
 
 	command := args[1]
+	arguments := args[2:]
+
+	parsedArgs := parseParameters(arguments)
 
 	for _, option := range options {
 		if strings.Compare(command, option.CommandName) == 0 {
-			option.Handler(args[1:]...)
+			option.Handler(parsedArgs...)
 		}
 	}
+}
+
+func parseParameters(arguments []string) []string {
+	var parsedArgs []string
+
+	for _, arg := range arguments {
+		if len(arg) < 2 {
+			fmt.Printf("Invalid option: %s\n", arg)
+			return parsedArgs
+		}
+
+		if strings.HasPrefix(arg, "-") {
+			for _, singleArg := range arg[1:] {
+				parsedArgs = append(parsedArgs, string(singleArg))
+			}
+		} else {
+			fmt.Printf("Invalid option: %s\n", arg)
+			return parsedArgs
+		}
+	}
+	return parsedArgs
 }

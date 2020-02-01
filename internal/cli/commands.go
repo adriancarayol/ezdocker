@@ -13,7 +13,8 @@ var options []Command
 
 func initLsCommand() Command {
 	dockerClient := docker.New()
-	return Command{CommandName: list, Handler: dockerClient.PrintContainers}
+	printContainersCmd := docker.PrintContainersCommand{Docker: dockerClient}
+	return Command{CommandName: list, Handler: printContainersCmd.Handle}
 }
 
 func Init() {
