@@ -19,9 +19,11 @@ func printHelp() {
 	black := color.New(color.FgBlack)
 	blackBold := black.Add(color.Bold)
 	fmt.Print("Usage: ")
-	blackBold.Println("ezd <option> <arguments>")
+	msg := blackBold.Sprint("ezd <option> <arguments>")
+	fmt.Println(msg)
 	fmt.Print("Help: ")
-	blackBold.Println("ezd help")
+	msg = blackBold.Sprint("ezd help")
+	fmt.Println(msg)
 }
 
 // Parse arguments from args

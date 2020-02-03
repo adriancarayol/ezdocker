@@ -3,17 +3,27 @@ package docker
 import (
 	"context"
 	"fmt"
+	"github.com/adriancarayol/ezdocker/internal/utils"
 	"github.com/docker/docker/api/types"
 	"github.com/fatih/color"
 	"log"
+	"sort"
 	"strings"
 )
 
-const minimal = "-m"
+const (
+	empty   = ""
+	minimal = "m"
+)
 
 // Command to print containers
 type PrintContainersCommand struct {
 	Docker *Docker
+}
+
+func printHelp() {
+	fmt.Println("ls: <option>s")
+	fmt.Println("-m Minimal information (id, image, status)")
 }
 
 func (p *PrintContainersCommand) listContainers() []types.Container {
@@ -27,10 +37,11 @@ func (p *PrintContainersCommand) listContainers() []types.Container {
 
 	return containers
 }
+
 func printMinimal(c types.Container) {
 	containerNames := strings.Join(c.Names, ", ")
 	fmt.Println(containerNames)
-	black := color.New(color.FgBlack)
+	black := color.New(color.FgHiBlack)
 	blackBold := black.Add(color.Bold)
 	blackBold.Printf("  • ID: %s\n", c.ID)
 	blackBold.Printf("  • IMAGE: %s\n", c.Image)
@@ -40,6 +51,7 @@ func printMinimal(c types.Container) {
 func printDefaultContainerInfo(c types.Container) {
 	black := color.New(color.FgBlack)
 	blackBold := black.Add(color.Bold)
+
 	printMinimal(c)
 
 	blackBold.Printf("  • COMMAND: %s\n", c.Command)
@@ -59,19 +71,25 @@ func (p *PrintContainersCommand) Handle(opts ...string) {
 	if containers != nil && len(containers) > 0 {
 		fmt.Printf("=== Running %d containers ===\n", len(containers))
 
-		for _, c := range containers {
-			if len(opts) <= 0 {
+		sort.Slice(opts, func(i, j int) bool {
+			return opts[i] < opts[j]
+		})
+
+		joinedOpts := strings.Join(opts, "")
+
+		switch utils.OrderString(joinedOpts) {
+		case empty:
+			for _, c := range containers {
 				printDefaultContainerInfo(c)
 			}
-			for _, opt := range opts {
-				switch opt {
-				case minimal:
-					printMinimal(c)
-				default:
-					printDefaultContainerInfo(c)
-				}
+		case utils.OrderString(minimal):
+			for _, c := range containers {
+				printMinimal(c)
 			}
+		default:
+			printHelp()
 		}
+
 	} else {
 		fmt.Println("There's no containers running.")
 	}
