@@ -3,10 +3,12 @@ package docker
 import (
 	"context"
 	"github.com/docker/docker/api/types"
+	"time"
 )
 
 type Client interface {
 	ContainerList(ctx context.Context, options types.ContainerListOptions) ([]types.Container, error)
+	ContainerStop(ctx context.Context, containerID string, timeout *time.Duration) error
 }
 
 type Docker struct {
@@ -21,35 +23,3 @@ type CommandParameter struct {
 func New(client Client) *Docker {
 	return &Docker{client: client}
 }
-
-
-//// Stop containers with id in containerIds
-//func (d *Docker) StopContainers(containerIds ...string) {
-//	ctx := context.TODO()
-//	for _, containerId := range containerIds {
-//		fmt.Printf("Stopping container with ID: %s ...\n", containerId)
-//		err := d.client.ContainerStop(ctx, containerId, nil)
-//
-//		if err != nil {
-//			fmt.Printf("Error stopping container with ID: %s ...\n", containerId)
-//		}
-//	}
-//}
-//
-//// Stop all running containers
-//func (d *Docker) StopAllContainers() {
-//	containers := d.ListContainers()
-//
-//	if containers == nil {
-//		fmt.Println("Not running containers")
-//		return
-//	}
-//
-//	var containerIds = make([]string, len(containers))
-//
-//	for i, container := range containers {
-//		containerIds[i] = container.ID
-//	}
-//
-//	d.StopContainers(containerIds...)
-//}

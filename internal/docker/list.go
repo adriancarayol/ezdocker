@@ -21,12 +21,12 @@ type PrintContainersCommand struct {
 	Docker *Docker
 }
 
-func printHelp() {
+func printListHelp() {
 	fmt.Println("ls: <option>s")
 	fmt.Println("-m Minimal information (id, image, status)")
 }
 
-func (p *PrintContainersCommand) listContainers() []types.Container {
+func (p PrintContainersCommand) listContainers() []types.Container {
 	ctx := context.TODO()
 	containers, err := p.Docker.client.ContainerList(ctx, types.ContainerListOptions{})
 
@@ -65,7 +65,7 @@ func printDefaultContainerInfo(c types.Container) {
 	}
 }
 
-func (p *PrintContainersCommand) Handle(opts ...string) {
+func (p PrintContainersCommand) Handle(opts ...string) {
 	containers := p.listContainers()
 
 	if containers != nil && len(containers) > 0 {
@@ -87,7 +87,7 @@ func (p *PrintContainersCommand) Handle(opts ...string) {
 				printMinimal(c)
 			}
 		default:
-			printHelp()
+			printListHelp()
 		}
 
 	} else {
