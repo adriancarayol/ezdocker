@@ -2,14 +2,15 @@ package cli
 
 import (
 	"fmt"
-	"github.com/fatih/color"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 const minArgs = 2
 
-type Parser struct {}
+type Parser struct{}
 
 func New() *Parser {
 	return &Parser{}
@@ -27,7 +28,7 @@ func printHelp() {
 }
 
 // Parse arguments from args
-func (p *Parser) ParseOptions() {
+func (p Parser) ParseOptions() {
 	args := os.Args
 
 	if len(args) < minArgs {
@@ -38,7 +39,7 @@ func (p *Parser) ParseOptions() {
 	command := args[1]
 	arguments := args[2:]
 
-	parsedArgs, err := parseParameters(arguments)
+	parsedArgs, err := p.parseParameters(arguments)
 
 	if err != nil {
 		switch e := err.(type) {
@@ -55,7 +56,7 @@ func (p *Parser) ParseOptions() {
 	}
 }
 
-func parseParameters(arguments []string) ([]string, error) {
+func (p Parser) parseParameters(arguments []string) ([]string, error) {
 	var parsedArgs []string
 
 	for _, arg := range arguments {
@@ -66,11 +67,11 @@ func parseParameters(arguments []string) ([]string, error) {
 
 		if strings.HasPrefix(arg, "-") {
 			for _, singleArg := range arg[1:] {
-				parsedArgs = append(parsedArgs, string(singleArg))
+				prefixedArg := "-" + string(singleArg)
+				parsedArgs = append(parsedArgs, prefixedArg)
 			}
 		} else {
-			err := &InvalidArgsError{InvalidArg: arg}
-			return nil, err
+			parsedArgs = append(parsedArgs, arg)
 		}
 	}
 	return parsedArgs, nil

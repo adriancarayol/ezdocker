@@ -3,17 +3,18 @@ package docker
 import (
 	"context"
 	"fmt"
-	"github.com/adriancarayol/ezdocker/internal/utils"
-	"github.com/docker/docker/api/types"
-	"github.com/fatih/color"
 	"log"
 	"sort"
 	"strings"
+
+	"github.com/adriancarayol/ezdocker/internal/utils"
+	"github.com/docker/docker/api/types"
+	"github.com/fatih/color"
 )
 
 const (
 	empty   = ""
-	minimal = "m"
+	minimal = "-m"
 )
 
 // Command to print containers
@@ -65,17 +66,21 @@ func printDefaultContainerInfo(c types.Container) {
 	}
 }
 
+func (p PrintContainersCommand) ExtractOptionsAndParams(opts ...string) ([]string, []string) {
+	sort.Slice(opts, func(i, j int) bool {
+		return opts[i] < opts[j]
+	})
+
+	return opts, nil
+}
+
 func (p PrintContainersCommand) Handle(opts ...string) {
 	containers := p.listContainers()
 
 	if containers != nil && len(containers) > 0 {
-		fmt.Printf("=== Running %d containers ===\n", len(containers))
+		options, _ := p.ExtractOptionsAndParams(opts...)
 
-		sort.Slice(opts, func(i, j int) bool {
-			return opts[i] < opts[j]
-		})
-
-		joinedOpts := strings.Join(opts, "")
+		joinedOpts := strings.Join(options, "")
 
 		switch utils.OrderString(joinedOpts) {
 		case empty:

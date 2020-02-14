@@ -3,14 +3,14 @@ package docker
 import (
 	"context"
 	"fmt"
-	"github.com/adriancarayol/ezdocker/internal/utils"
-	"github.com/docker/docker/api/types"
-	"sort"
 	"strings"
+
+	"github.com/docker/docker/api/types"
 )
 
 const (
-	all = "a"
+	all         = "-a"
+	stopDefault = ""
 )
 
 // Command to stop containers
@@ -35,13 +35,12 @@ func (s StopContainersCommand) stopContainers(containerIds ...string) {
 	}
 }
 
-
 func (s StopContainersCommand) stopAllContainers() {
 	ctx := context.TODO()
 	containers, err := s.Docker.client.ContainerList(ctx, types.ContainerListOptions{})
 
-	if err != nil {
-		fmt.Println("Not running containers")
+	if err != nil || len(containers) <= 0 {
+		fmt.Println("Not running containers.")
 		return
 	}
 
@@ -54,15 +53,31 @@ func (s StopContainersCommand) stopAllContainers() {
 	s.stopContainers(containerIds...)
 }
 
-func (s StopContainersCommand) Handle(opts ...string) {
-	sort.Slice(opts, func(i, j int) bool {
-		return opts[i] < opts[j]
-	})
+func (s StopContainersCommand) ExtractOptionsAndParams(opts ...string) ([]string, []string) {
+	params := []string{}
+	options := []string{}
 
-	joinedOpts := strings.Join(opts, "")
-	switch utils.OrderString(joinedOpts) {
+	for _, opt := range opts {
+		if strings.HasPrefix(opt, "-") {
+			options = append(options, opt)
+		} else {
+			params = append(params, opt)
+		}
+
+	}
+
+	return options, params
+}
+
+func (s StopContainersCommand) Handle(opts ...string) {
+	options, params := s.ExtractOptionsAndParams(opts...)
+	joinedOpts := strings.Join(options, "")
+
+	switch joinedOpts {
 	case all:
 		s.stopAllContainers()
+	case stopDefault:
+		s.stopContainers(params...)
 	default:
 		printStopContainersHelp()
 	}

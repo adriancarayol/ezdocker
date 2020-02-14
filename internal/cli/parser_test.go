@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"reflect"
 	"regexp"
 	"strings"
 	"testing"
@@ -30,17 +31,18 @@ Help: ezd help
 	}
 }
 
-func TestParseOptionsInvalidArg(t *testing.T) {
-	expected := "Invalid argument: a\n"
+func TestParseParameters(t *testing.T) {
+	expected := []string{"ls", "a"}
 
 	mockClient := mock.DockerClient{}
 
 	ConfigureCommands(mockClient)
 
 	parser := New()
-	out := tests.CaptureStdoutWrapper(parser.ParseOptions, []string{"test", "ls", "a"})
 
-	if strings.Compare(out, expected) != 0 {
+	out, _ := parser.parseParameters([]string{"test", "ls", "a"})
+
+	if reflect.DeepEqual(expected, out) {
 		t.Fatalf("Fail. Expected: %s, got: %s", expected, out)
 	}
 }
