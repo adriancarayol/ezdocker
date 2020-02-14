@@ -1,9 +1,10 @@
 package cli
 
 import (
+	"testing"
+
 	"github.com/adriancarayol/ezdocker/internal/cli/mock"
 	"github.com/adriancarayol/ezdocker/internal/docker"
-	"testing"
 )
 
 func TestConfigureCommands(t *testing.T) {
@@ -11,8 +12,11 @@ func TestConfigureCommands(t *testing.T) {
 	dockerClient := docker.New(mockClient)
 
 	printContainersCmd := docker.PrintContainersCommand{Docker: dockerClient}
+	stopContainersCmd := docker.StopContainersCommand{Docker: dockerClient}
+
 	expected := []Command{
 		{CommandName: list, Handler: printContainersCmd.Handle},
+		{CommandName: stop, Handler: stopContainersCmd.Handle},
 	}
 
 	ConfigureCommands(mockClient)
