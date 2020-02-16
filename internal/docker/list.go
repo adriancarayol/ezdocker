@@ -9,7 +9,6 @@ import (
 
 	"github.com/adriancarayol/ezdocker/internal/utils"
 	"github.com/docker/docker/api/types"
-	"github.com/fatih/color"
 )
 
 const (
@@ -42,27 +41,23 @@ func (p PrintContainersCommand) listContainers() []types.Container {
 func printMinimal(c types.Container) {
 	containerNames := strings.Join(c.Names, ", ")
 	fmt.Println(containerNames)
-	black := color.New(color.FgHiBlack)
-	blackBold := black.Add(color.Bold)
-	blackBold.Printf("  • ID: %s\n", c.ID)
-	blackBold.Printf("  • IMAGE: %s\n", c.Image)
-	blackBold.Printf("  • STATUS: %s - %s\n", c.State, c.Status)
+
+	fmt.Printf("  • ID: %s\n", c.ID)
+	fmt.Printf("  • IMAGE: %s\n", c.Image)
+	fmt.Printf("  • STATUS: %s - %s\n", c.State, c.Status)
 }
 
 func printDefaultContainerInfo(c types.Container) {
-	black := color.New(color.FgBlack)
-	blackBold := black.Add(color.Bold)
-
 	printMinimal(c)
 
-	blackBold.Printf("  • COMMAND: %s\n", c.Command)
-	blackBold.Println("  • PORTS:")
+	fmt.Printf("  • COMMAND: %s\n", c.Command)
+	fmt.Println("  • PORTS:")
 
 	for _, port := range c.Ports {
-		blackBold.Printf("    • IP: %s\n", port.IP)
-		blackBold.Printf("    • Public port: %d\n", port.PublicPort)
-		blackBold.Printf("    • Private port: %d\n", port.PrivatePort)
-		blackBold.Printf("    • Protocol: %s\n", port.Type)
+		fmt.Printf("    • IP: %s\n", port.IP)
+		fmt.Printf("    • Public port: %d\n", port.PublicPort)
+		fmt.Printf("    • Private port: %d\n", port.PrivatePort)
+		fmt.Printf("    • Protocol: %s\n", port.Type)
 	}
 }
 

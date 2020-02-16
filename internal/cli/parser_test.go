@@ -40,7 +40,7 @@ func TestParseParameters(t *testing.T) {
 
 	parser := New()
 
-	out, _ := parser.parseParameters([]string{"test", "ls", "a"})
+	out, _ := parser.parseParameters([]string{"test", "ls", "-a"})
 
 	if reflect.DeepEqual(expected, out) {
 		t.Fatalf("Fail. Expected: %s, got: %s", expected, out)

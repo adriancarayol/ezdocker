@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/fatih/color"
 )
 
 const minArgs = 2
@@ -17,14 +15,10 @@ func New() *Parser {
 }
 
 func printHelp() {
-	black := color.New(color.FgBlack)
-	blackBold := black.Add(color.Bold)
 	fmt.Print("Usage: ")
-	msg := blackBold.Sprint("ezd <option> <arguments>")
-	fmt.Println(msg)
+	fmt.Println("ezd <option> <arguments>")
 	fmt.Print("Help: ")
-	msg = blackBold.Sprint("ezd help")
-	fmt.Println(msg)
+	fmt.Println("ezd help")
 }
 
 // Parse arguments from args
@@ -60,11 +54,10 @@ func (p Parser) parseParameters(arguments []string) ([]string, error) {
 	var parsedArgs []string
 
 	for _, arg := range arguments {
-		if len(arg) < 2 {
-			err := &InvalidArgsError{InvalidArg: arg}
-			return nil, err
-		}
-
+		/*
+		Extract complex arguments also,
+		for example: -axb will be: -a -x -b
+		 */
 		if strings.HasPrefix(arg, "-") {
 			for _, singleArg := range arg[1:] {
 				prefixedArg := "-" + string(singleArg)
