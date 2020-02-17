@@ -33,15 +33,7 @@ func (p Parser) ParseOptions() {
 	command := args[1]
 	arguments := args[2:]
 
-	parsedArgs, err := p.parseParameters(arguments)
-
-	if err != nil {
-		switch e := err.(type) {
-		case *InvalidArgsError:
-			fmt.Print(e.Error())
-		}
-		return
-	}
+	parsedArgs := p.parseParameters(arguments)
 
 	for _, option := range options {
 		if strings.Compare(command, option.CommandName) == 0 {
@@ -50,14 +42,14 @@ func (p Parser) ParseOptions() {
 	}
 }
 
-func (p Parser) parseParameters(arguments []string) ([]string, error) {
+func (p Parser) parseParameters(arguments []string) []string {
 	var parsedArgs []string
 
 	for _, arg := range arguments {
 		/*
-		Extract complex arguments also,
-		for example: -axb will be: -a -x -b
-		 */
+			Extract complex arguments also,
+			for example: -axb will be: -a -x -b
+		*/
 		if strings.HasPrefix(arg, "-") {
 			for _, singleArg := range arg[1:] {
 				prefixedArg := "-" + string(singleArg)
@@ -67,5 +59,5 @@ func (p Parser) parseParameters(arguments []string) ([]string, error) {
 			parsedArgs = append(parsedArgs, arg)
 		}
 	}
-	return parsedArgs, nil
+	return parsedArgs
 }

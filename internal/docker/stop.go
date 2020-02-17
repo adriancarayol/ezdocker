@@ -54,8 +54,8 @@ func (s StopContainersCommand) stopAllContainers() {
 }
 
 func (s StopContainersCommand) ExtractOptionsAndParams(opts ...string) ([]string, []string) {
-	params := []string{}
-	options := []string{}
+	var params []string
+	var options []string
 
 	for _, opt := range opts {
 		if strings.HasPrefix(opt, "-") {

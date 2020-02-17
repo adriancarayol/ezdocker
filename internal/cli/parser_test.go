@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"os"
 	"reflect"
 	"regexp"
 	"strings"
@@ -31,6 +32,19 @@ Help: ezd help
 	}
 }
 
+func TestParser_ParseOptions(t *testing.T) {
+	mockClient := mock.DockerClient{}
+
+	ConfigureCommands(mockClient)
+
+	parser := New()
+
+	oldArgs := os.Args
+	os.Args = []string{"test", "ls", "-a"}
+	parser.ParseOptions()
+	os.Args = oldArgs
+}
+
 func TestParseParameters(t *testing.T) {
 	expected := []string{"ls", "a"}
 
@@ -40,7 +54,7 @@ func TestParseParameters(t *testing.T) {
 
 	parser := New()
 
-	out, _ := parser.parseParameters([]string{"test", "ls", "-a"})
+	out := parser.parseParameters([]string{"test", "ls", "-a"})
 
 	if reflect.DeepEqual(expected, out) {
 		t.Fatalf("Fail. Expected: %s, got: %s", expected, out)
