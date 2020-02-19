@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
-
+    "sync"
 	"github.com/docker/docker/api/types"
 )
 
@@ -25,14 +25,21 @@ func printStopContainersHelp() {
 
 func (s StopContainersCommand) stopContainers(containerIds ...string) {
 	ctx := context.TODO()
-	for _, containerId := range containerIds {
-		fmt.Printf("Stopping container with ID: %s ...\n", containerId)
-		err := s.Docker.client.ContainerStop(ctx, containerId, nil)
+    var wg sync.WaitGroup
+    wg.Add(len(containerIds))
 
-		if err != nil {
-			fmt.Printf("Error stopping container with ID: %s ...\n", containerId)
-		}
+	for _, containerId := range containerIds {
+        go func(containerId string) {
+            defer wg.Done()
+		    fmt.Printf("Stopping container with ID: %s ...\n", containerId)
+
+		    err := s.Docker.client.ContainerStop(ctx, containerId, nil)
+            if err != nil {
+			    fmt.Printf("Error stopping container with ID: %s ...\n", containerId)
+		    }
+        }(containerId)
 	}
+    wg.Wait()
 }
 
 func (s StopContainersCommand) stopAllContainers() {
