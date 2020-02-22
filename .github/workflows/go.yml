@@ -23,7 +23,7 @@ jobs:
           echo ${GOPATH}
           echo ${GOROOT}
         env:
-          GOPATH: /home/runner/work/ezdocker/ezdocker
+          GOPATH: /home/runner/work/ezdocker/go
 
       - name: Get dependencies
         run: |
@@ -33,9 +33,9 @@ jobs:
               dep ensure
           fi
         env:
-          GOPATH: /home/runner/work/ezdocker/
+          GOPATH: /home/runner/work/ezdocker/go
 
       - name: Build
         run: go build -v .
         env:
-          GOPATH: /home/runner/work/ezdocker/ezdocker
+          GOPATH: /home/runner/work/ezdocker/go
