@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/adriancarayol/ezdocker/internal/docker"
+	"github.com/adriancarayol/ezdocker/pkg/docker"
 	"log"
 )
 

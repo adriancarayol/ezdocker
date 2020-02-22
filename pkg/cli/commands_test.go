@@ -3,8 +3,8 @@ package cli
 import (
 	"testing"
 
-	"github.com/adriancarayol/ezdocker/internal/cli/mock"
-	"github.com/adriancarayol/ezdocker/internal/docker"
+	"github.com/adriancarayol/ezdocker/pkg/cli/mock"
+	"github.com/adriancarayol/ezdocker/pkg/docker"
 )
 
 func TestConfigureCommands(t *testing.T) {

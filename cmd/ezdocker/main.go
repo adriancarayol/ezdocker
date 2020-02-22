@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/adriancarayol/ezdocker/internal/cli"
-	"github.com/adriancarayol/ezdocker/internal/docker"
+	"github.com/adriancarayol/ezdocker/pkg/cli"
+	"github.com/adriancarayol/ezdocker/pkg/docker"
 	"github.com/docker/docker/client"
 	"github.com/mitchellh/go-homedir"
 	"log"
@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	logFile = "ezdocker.log"
+	logFile   = "ezdocker.log"
 	logFolder = ".ezdocker"
 )
 
@@ -35,7 +35,7 @@ func init() {
 
 	fullFileLogPath := filepath.Join(fullLogPath, logFile)
 
-	f, errFile := os.OpenFile(fullFileLogPath, os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+	f, errFile := os.OpenFile(fullFileLogPath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 
 	if errFile != nil {
 		log.Printf("Cannot create %s log file, using stdout for log. Error: %s", fullFileLogPath, errFile)

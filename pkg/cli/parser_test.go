@@ -1,12 +1,14 @@
 package cli
 
 import (
+	"os"
+	"reflect"
 	"regexp"
 	"strings"
 	"testing"
 
-	"github.com/adriancarayol/ezdocker/internal/cli/mock"
-	"github.com/adriancarayol/ezdocker/internal/tests"
+	"github.com/adriancarayol/ezdocker/pkg/cli/mock"
+	"github.com/adriancarayol/ezdocker/pkg/tests"
 )
 
 func TestParseOptionsMinArgs(t *testing.T) {
@@ -30,17 +32,31 @@ Help: ezd help
 	}
 }
 
-func TestParseOptionsInvalidArg(t *testing.T) {
-	expected := "Invalid argument: a\n"
+func TestParser_ParseOptions(t *testing.T) {
+	mockClient := mock.DockerClient{}
+
+	ConfigureCommands(mockClient)
+
+	parser := New()
+
+	oldArgs := os.Args
+	os.Args = []string{"test", "ls", "-a"}
+	parser.ParseOptions()
+	os.Args = oldArgs
+}
+
+func TestParseParameters(t *testing.T) {
+	expected := []string{"ls", "a"}
 
 	mockClient := mock.DockerClient{}
 
 	ConfigureCommands(mockClient)
 
 	parser := New()
-	out := tests.CaptureStdoutWrapper(parser.ParseOptions, []string{"test", "ls", "a"})
 
-	if strings.Compare(out, expected) != 0 {
+	out := parser.parseParameters([]string{"test", "ls", "-a"})
+
+	if reflect.DeepEqual(expected, out) {
 		t.Fatalf("Fail. Expected: %s, got: %s", expected, out)
 	}
 }
