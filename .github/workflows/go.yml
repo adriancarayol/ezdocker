@@ -23,9 +23,9 @@ jobs:
               dep ensure
           fi
         env:
-          GOPATH: /home/runner/work/ezdocker/
+          GOPATH: /home/runner/work/ezdocker/go
 
       - name: Build
         run: go build -v .
         env:
-          GOPATH: /home/runner/work/ezdocker/
+          GOPATH: /home/runner/work/ezdocker/go
