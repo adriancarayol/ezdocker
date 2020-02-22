@@ -2,10 +2,6 @@ name: Go
 on: [push]
 jobs:
   build:
-    env:
-      GOPATH: ${{ github.workspace }}
-      GO11MODULE: off
-
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -26,6 +22,10 @@ jobs:
               curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
               dep ensure
           fi
+        env:
+          GOPATH: /home/runner/work/ezdocker/
 
       - name: Build
         run: go build -v .
+        env:
+          GOPATH: /home/runner/work/ezdocker/
