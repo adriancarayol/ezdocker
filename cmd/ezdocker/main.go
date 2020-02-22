@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/adriancarayol/ezdocker/internal/cli"
-	"github.com/adriancarayol/ezdocker/internal/docker"
+	"github.com/adriancarayol/ezdocker/pkg/cli"
+	"github.com/adriancarayol/ezdocker/pkg/docker"
 	"github.com/docker/docker/client"
 	"github.com/mitchellh/go-homedir"
 	"log"

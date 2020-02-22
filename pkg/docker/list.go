@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/adriancarayol/ezdocker/internal/utils"
+	"github.com/adriancarayol/ezdocker/pkg/utils"
 	"github.com/docker/docker/api/types"
 )
 

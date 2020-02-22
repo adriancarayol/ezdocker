@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/adriancarayol/ezdocker/internal/cli/mock"
-	"github.com/adriancarayol/ezdocker/internal/tests"
+	"github.com/adriancarayol/ezdocker/pkg/cli/mock"
+	"github.com/adriancarayol/ezdocker/pkg/tests"
 )
 
 func TestParseOptionsMinArgs(t *testing.T) {
